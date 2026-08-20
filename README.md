@@ -1,6 +1,10 @@
 # Overview
 
-PLP Assignment 2 is a Node.js ingestion gateway that receives order webhooks from external sales channels (Shopify, Amazon) and synchronizes inventory counts in real time. It uses a decoupled, event-driven pipeline — validation, an in-memory FIFO queue, and a lock-protected sequential worker — to absorb traffic spikes and prevent race conditions during database writes. Built with pure, dependency-light JavaScript and Express, it demonstrates a shift from legacy polling to a resilient, real-time webhook-push architecture.
+PLP Assignment 2 is a Node.js ingestion gateway that receives order webhooks from external sales channels (Shopify, Amazon) and synchronizes inventory counts in real time. It uses a decoupled, event-driven pipeline — validation, an in-memory FIFO queue, and a lock-protected sequential worker — to absorb traffic spikes and prevent race conditions during database writes. Built with pure, dependency-light JavaScript and Express, it demonstrates a shift from legacy polling to a resilient, real-time webhook-push architecture
+
+
+NOTE FROM MMOSI: Check the Day-4-Pivot Branch to see the updated version with the pivot included
+
 
 ## Getting Started
 
