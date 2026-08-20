@@ -31,7 +31,7 @@ app.listen(port, () => {
 });
 
 //Validation function to check if the payload is valid
-function validaeOrderWebhook(payload) {
+function validateOrderWebhook(payload) {
     const errors=[];
 
     //1. Check if orderId is present and is a string
@@ -55,5 +55,8 @@ function validaeOrderWebhook(payload) {
         errors.push("Missing or invalid channel: Must be one of " + allowedChannels.join(', '));
     }
 
-    return errors;
+    return {
+    isValid: errors.length === 0,
+    errors
+  };
 }
