@@ -7,13 +7,13 @@ This repository documents two stages of an event-driven backend architecture bui
 | Branch | Use Case | Core Pattern |
 |---|---|---|
 | **`main`** | Order webhook → inventory sync | Validate → Queue → Sequential Worker |
-| **`pivot`** | Kiosk scan → badge print confirmation | Validate → Lock State → Queue → Webhook Callback Resolution |
+| **`Day-4-Pivot`** | Kiosk scan → badge print confirmation | Validate → Lock State → Queue → Webhook Callback Resolution |
 
 ---
 
 ## 🔀 What Changed Between Branches
 
-The `pivot` branch is not a bug fix — it's an architectural evolution of the same core idea, applied to a scenario with an external hardware dependency (a physical badge printer) instead of a database write.
+The `Day-4-Pivot` branch is not a bug fix — it's an architectural evolution of the same core idea, applied to a scenario with an external hardware dependency (a physical badge printer) instead of a database write.
 
 | Attribute | `main` (Order Sync) | `pivot` (Kiosk Print) |
 |---|---|---|
@@ -24,7 +24,7 @@ The `pivot` branch is not a bug fix — it's an architectural evolution of the s
 | **Duplicate protection** | Implicit (FIFO queue processes everything once) | Explicit `409 Conflict` on repeat scans while `Pending` |
 | **Final state source** | Local worker computes the result | Third-party webhook confirms the result |
 
-In short: `main` decouples ingestion from *internal* processing speed. `pivot` goes a step further and decouples ingestion from an *external* system's completion time, using a callback instead of assuming the worker alone can finish the job.
+In short: `main` decouples ingestion from *internal* processing speed. `Day-4-Pivot` goes a step further and decouples ingestion from an *external* system's completion time, using a callback instead of assuming the worker alone can finish the job.
 
 ---
 
@@ -118,7 +118,7 @@ Response from Server: Webhook queued and validated!
 
 ---
 
-## 🔄 Branch 2: `pivot` — Solstice Kiosk Badge Printing
+## 🔄 Branch 2: `Day-4-Pivot` — Solstice Kiosk Badge Printing
 
 ### Architecture
 
@@ -168,7 +168,7 @@ Response from Server: Webhook queued and validated!
 2. **Pending** — set the instant a valid scan is received. The kiosk shows a loading spinner; any duplicate scan is rejected with `409 Conflict`.
 3. **Checked In** — set once the printer vendor's webhook callback confirms a successful print. The kiosk spinner resolves to a success checkmark.
 
-### Getting Started — `pivot` branch
+### Getting Started — `Day-4-Pivot` branch
 
 ```bash
 git clone https://github.com/ammi-mmosi/plp-assignment-2.git
@@ -179,7 +179,7 @@ cd plp-assignment-2
 ```
 
 ```bash
-git checkout pivot
+git checkout Day-4-Pivot
 ```
 
 ```bash
@@ -187,7 +187,7 @@ npm install express
 ```
 
 ```bash
-node index.js
+node index_2.js
 ```
 
 Expected output:
@@ -196,7 +196,7 @@ Expected output:
 Solstice Kiosk server running on http://localhost:3000
 ```
 
-### Running the Test — `pivot` branch
+### Running the Test — `Day-4-Pivot` branch
 
 In a **second terminal**, with the server still running:
 
@@ -218,7 +218,7 @@ This asserts, end to end:
 | Branch | Lock Mechanism | What It Prevents |
 |---|---|---|
 | `main` | Boolean `isProcessing` flag guards the worker loop | Two worker loops running concurrently over the same queue |
-| `pivot` | Per-record `Pending` state guards individual attendees | Duplicate print jobs from rapid double-scans on the same attendee |
+| `Day-4-Pivot` | Per-record `Pending` state guards individual attendees | Duplicate print jobs from rapid double-scans on the same attendee |
 
 Both patterns commit their lock **synchronously, before any async work begins** — creating an application-level mutex that holds regardless of how many requests arrive concurrently.
 
